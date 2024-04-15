@@ -6,6 +6,7 @@ import com.tawasupermarket.purchasemicroservice.dto.request.PurchaseRequest;
 import com.tawasupermarket.purchasemicroservice.dto.response.PurchaseResponse;
 import com.tawasupermarket.purchasemicroservice.model.PurchaseModel;
 import com.tawasupermarket.purchasemicroservice.repository.PurchaseRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class PurchaseAdminServiceImpl implements PurchaseAdminService {
     private final PurchaseConverter purchaseConverter;
     private final UserServiceImpl userService;
 
+    @Autowired
     public PurchaseAdminServiceImpl(PurchaseRepository purchaseRepository, PurchaseConverter purchaseConverter, UserServiceImpl userService) {
         this.purchaseRepository = purchaseRepository;
         this.purchaseConverter = purchaseConverter;
@@ -39,7 +41,7 @@ public class PurchaseAdminServiceImpl implements PurchaseAdminService {
         PurchaseModel purchaseModel = purchaseConverter.convertPurchaseRequestToPurchaseModel(
                 PurchaseRequest.builder().purchaseAmount(purchaseAdminRequest.getPurchaseAmount()).build()
         );
-        purchaseModel.setUserId(purchaseModel.getUserId());
+        purchaseModel.setUserId(purchaseAdminRequest.getUserId());
         long purchasePoint = calculatePoints(purchaseAdminRequest.getPurchaseAmount());
         purchaseModel.setPurchasePoints(purchasePoint);
         userService.updateUserPoints(purchasePoint);

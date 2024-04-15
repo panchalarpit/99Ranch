@@ -7,14 +7,12 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController("/admin")
+@RestController
+@RequestMapping("/admin")
 public class PurchaseAdminController {
     private final PurchaseAdminServiceImpl purchaseAdminService;
 
@@ -29,7 +27,7 @@ public class PurchaseAdminController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<PurchaseResponse> createPurchaseByUserId(@Valid PurchaseAdminRequest purchaseAdminRequest) {
+    public ResponseEntity<PurchaseResponse> createPurchaseByUserId(@Valid @RequestBody PurchaseAdminRequest purchaseAdminRequest) {
         return new ResponseEntity<>(purchaseAdminService.createPurchase(purchaseAdminRequest), HttpStatus.CREATED);
     }
 
