@@ -14,6 +14,9 @@ To Run the Customer Service:
 
 To Run the Purchase Service:
 - Update the database credentials and the admin token in the `src/main/resources/application.properties` file.
+Use below query to setup admin user with username 'test' and password 'Panchal@123':
+  `insert into customer.user values('eaa14fbc-c98c-4519-8dce-0b720bfccbb4',"Ahmedabad","test1","X3oNwdSSN2iwkDZpiz1ifA==",0,1);`
+  
 
 ## How the Application Works:
 
