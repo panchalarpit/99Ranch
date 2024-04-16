@@ -18,6 +18,7 @@ public class JwtUtils {
     @Value("${jwt.expiration}")
     private int jwtExpiration;
 
+//  To Generate user token using user's information
     public String generateToken(UserModel user) {
         return Jwts.builder()
                 .setSubject(user.getUserId())
@@ -27,10 +28,12 @@ public class JwtUtils {
                 .compact();
     }
 
+//    To Extract userId from user's token
     public String extractUserId(String token) {
         return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
     }
 
+//    To Validate token with application secret key
     public boolean validateToken(String authToken) {
         try {
             Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);

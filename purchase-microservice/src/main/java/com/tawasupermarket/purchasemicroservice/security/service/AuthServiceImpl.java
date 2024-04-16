@@ -22,6 +22,7 @@ public class AuthServiceImpl implements AuthService{
         this.userService = userService;
     }
 
+//    To validate user's token
     @Override
     public UserModel validateUser(String jwtToken) throws ResourceNotFoundException, AccessDeniedException {
         if(jwtUtils.validateToken(jwtToken)){

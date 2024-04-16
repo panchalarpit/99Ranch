@@ -24,11 +24,13 @@ public class AuthServiceImpl implements AuthService {
         this.aesEncryption = aesEncryption;
     }
 
+//    To generate token using user's information and application secret
     @Override
     public String generateToken(UserModel user) {
         return jwtUtils.generateToken(user);
     }
 
+//    To validate user's token using application secret
     @Override
     public UserModel validateUser(String jwtToken) throws ResourceNotFoundException, AccessDeniedException {
         if (jwtUtils.validateToken(jwtToken)) {

@@ -58,6 +58,8 @@ public class PurchaseAdminServiceImpl implements PurchaseAdminService {
         return purchaseResponses;
     }
 
+    //calculating points based on user's purchase amount
+    //2 points for every dollar spent over $100 in each transaction, plus 1 point for every dollar spent over $50
     public long calculatePoints(long purchaseAmount) {
         if (purchaseAmount < 50) {
             return 0;
