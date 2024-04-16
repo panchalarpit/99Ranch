@@ -3,14 +3,12 @@ package com.tawasupermarket.purchasemicroservice.purchase;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tawasupermarket.purchasemicroservice.dto.request.PurchaseRequest;
 import com.tawasupermarket.purchasemicroservice.service.PurchaseServiceImpl;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -30,18 +28,19 @@ public class PurchaseControllerTest {
     private ObjectMapper objectMapper;
     private static PurchaseRequest purchaseRequest;
     private final static String purchaseId = "4d1c14ff-913c-489c-9365-564579afe904";
-    private final static String userId = "afd0885d-7064-4c30-863f-a46f797b65e5";
-    private final static String userToken ="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZmQwODg1ZC03MDY0LTRjMzAtODYzZi1hNDZmNzk3YjY1ZTUiLCJpYXQiOjE3MTMxNzA2MzEsImV4cCI6MTcxNTMxODExNX0.QLM0vsGXQmPOoqVHDfjq6CeoM_fQ4QJputw2pOfwABE";
+    @Value("${test.userId}")
+    private String userId ;
+    @Value("${test.userToken}")
+    private String userToken;
 
-
-    @BeforeAll
-    static void beforeAllTestCases() {
+    @BeforeEach
+    void beforeTestCases() {
         purchaseRequest = PurchaseRequest.builder().purchaseAmount(120).build();
     }
 
     @Test
     @Order(1)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check to purchase creation method")
     public void checkCreatePurchase() throws Exception {
         String requestBodyJson = objectMapper.writeValueAsString(purchaseRequest);
         mvc.perform(MockMvcRequestBuilders.post("/purchase/create")
@@ -54,7 +53,7 @@ public class PurchaseControllerTest {
 
     @Test
     @Order(2)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check to purchase data method")
     public void checkGetPurchaseData() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/purchase/{purchaseId}",purchaseId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -65,7 +64,7 @@ public class PurchaseControllerTest {
 
     @Test
     @Order(3)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check retrieving all user data method")
     public void checkGetAllPurchaseData() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/purchase/")
                         .contentType(MediaType.APPLICATION_JSON)

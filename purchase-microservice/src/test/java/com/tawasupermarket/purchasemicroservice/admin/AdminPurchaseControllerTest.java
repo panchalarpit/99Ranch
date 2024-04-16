@@ -4,14 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tawasupermarket.purchasemicroservice.dto.request.PurchaseAdminRequest;
 import com.tawasupermarket.purchasemicroservice.dto.request.PurchaseRequest;
 import com.tawasupermarket.purchasemicroservice.service.PurchaseAdminServiceImpl;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -30,17 +28,19 @@ public class AdminPurchaseControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
     private static PurchaseAdminRequest purchaseAdminRequest;
-    private final static String userId = "afd0885d-7064-4c30-863f-a46f797b65e5";
-    private final static String userToken ="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlYWExNGZiYy1jOThjLTQ1MTktOGRjZS0wYjcyMGJmY2NiYjMiLCJpYXQiOjE3MTMxMzQyMzAsImV4cCI6MTcxNTI4MTcxNH0.Kqxetda1lTd7nPepPcNd7NdGZgY-4RFvLZpG-8-yYfA";
+    @Value("${test.admin.userId}")
+    private String userId;
+    @Value("${test.admin.userToken}")
+    private String userToken;
 
-    @BeforeAll
-    static void beforeAllTestCases() {
+    @BeforeEach
+    void beforeTestCases() {
         purchaseAdminRequest = PurchaseAdminRequest.builder().userId(userId).purchaseAmount(120).build();
     }
 
     @Test
     @Order(1)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check All purchase data by user Id")
     public void checkGetAllPurchaseByUserId() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/admin/{userId}",userId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -50,7 +50,7 @@ public class AdminPurchaseControllerTest {
 
     @Test
     @Order(2)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check purchase data create")
     public void checkCreatePurchaseByUserId() throws Exception {
         String requestBodyJson = objectMapper.writeValueAsString(purchaseAdminRequest);
         mvc.perform(MockMvcRequestBuilders.post("/admin/create")
@@ -62,7 +62,7 @@ public class AdminPurchaseControllerTest {
 
     @Test
     @Order(3)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check all purchase data method")
     public void checkGetAllPurchaseData() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/admin/")
                         .header("Authorization", "Bearer " + userToken))

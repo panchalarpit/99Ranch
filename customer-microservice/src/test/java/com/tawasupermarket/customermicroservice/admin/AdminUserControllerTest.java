@@ -6,14 +6,12 @@ import com.tawasupermarket.customermicroservice.dto.request.UserPointRequest;
 import com.tawasupermarket.customermicroservice.dto.response.AdminUserResponse;
 import com.tawasupermarket.customermicroservice.model.UserRole;
 import com.tawasupermarket.customermicroservice.service.AdminUserServiceImpl;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
@@ -36,11 +34,13 @@ public class AdminUserControllerTest {
     private static AdminUserRequest adminUserRequest;
     private static AdminUserRequest adminUserInvalidRequest;
     private static UserPointRequest userPointRequest;
-    private final static String userId = "eaa14fbc-c98c-4519-8dce-0b720bfccbb3";
-    private final static String userToken ="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJlYWExNGZiYy1jOThjLTQ1MTktOGRjZS0wYjcyMGJmY2NiYjMiLCJpYXQiOjE3MTMxMzQyMzAsImV4cCI6MTcxNTI4MTcxNH0.Kqxetda1lTd7nPepPcNd7NdGZgY-4RFvLZpG-8-yYfA";
+    @Value("${test.admin.userId}")
+    private String userId;
+    @Value("${test.admin.userToken}")
+    private String userToken;
 
-    @BeforeAll
-    static void beforeAllTestCases() {
+    @BeforeEach
+    void beforeTestCases() {
         adminUserResponse = AdminUserResponse.builder().userId(userId).username("test").userAddress("Ahmedabad")
                 .userRole(UserRole.ROLE_ADMIN).userPoint(0).build();
         adminUserRequest = AdminUserRequest.builder().username("test").userAddress("Ahmedabad").userPassword("Panchal@123")
@@ -67,17 +67,17 @@ public class AdminUserControllerTest {
 
     @Test
     @Order(2)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check to User Data")
     public void checkGetUserData() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/admin/{userId}",userId)
                         .header("Authorization", "Bearer " + userToken))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("test"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(userId));
     }
 
     @Test
     @Order(3)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check to User data update")
     public void checkUpdateUserData() throws Exception {
         String requestBodyJson = objectMapper.writeValueAsString(adminUserRequest);
         mvc.perform(MockMvcRequestBuilders.put("/admin/{userId}",userId)
@@ -85,12 +85,12 @@ public class AdminUserControllerTest {
                         .header("Authorization", "Bearer " + userToken)
                         .content(requestBodyJson))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.username").value("test"));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.userId").value(userId));
     }
 
     @Test
     @Order(4)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check to User points")
     public void checkUpdateUserPoint() throws Exception {
         String requestBodyJson = objectMapper.writeValueAsString(userPointRequest);
         mvc.perform(MockMvcRequestBuilders.post("/admin/updatePoint",userId)
@@ -103,7 +103,7 @@ public class AdminUserControllerTest {
 
     @Test
     @Order(5)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check All User Data")
     public void checkGetAllUserData() throws Exception {
         mvc.perform(MockMvcRequestBuilders.get("/admin/users")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,7 +113,7 @@ public class AdminUserControllerTest {
 
     @Test
     @Order(6)
-    @DisplayName("Check to User creation method")
+    @DisplayName("Check invalid user data")
     public void checkCreateInvalidAdminUser() throws Exception {
         String requestBodyJson = objectMapper.writeValueAsString(adminUserInvalidRequest);
         mvc.perform(MockMvcRequestBuilders.post("/admin/create")

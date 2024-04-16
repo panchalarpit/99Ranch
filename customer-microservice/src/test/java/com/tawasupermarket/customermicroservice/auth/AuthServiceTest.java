@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.nio.file.AccessDeniedException;
@@ -35,16 +36,13 @@ public class AuthServiceTest {
     private AuthServiceImpl authService;
     private static UserModel userModel;
     private static LoginResponse loginResponse;
-    private final static String token="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZmQwODg1ZC03MDY0LTRjMzAtODYzZi1hNDZmNzk3YjY1ZTUiLCJpYXQiOjE3MTMxNzA2MzEsImV4cCI6MTcxNTMxODExNX0.QLM0vsGXQmPOoqVHDfjq6CeoM_fQ4QJputw2pOfwABE";
+    @Value("${test.userToken}")
+    private String token;
 
 
     @BeforeEach
     void setUp() {
         authService = new AuthServiceImpl(jwtUtils, userService, aesEncryption);
-    }
-
-    @BeforeAll
-    static void beforeAllTestCases() {
         userModel = UserModel.builder().userId("0da93546-4eaa-4331-98e6-738ae14efc34")
                 .username("test").userPassword("password").userRole(UserRole.ROLE_CUSTOMER).userAddress("city").userPoints(10).build();
         loginResponse = LoginResponse.builder().username("test").token(token).build();
